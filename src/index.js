@@ -1,26 +1,27 @@
 function check(str, bracketsConfig) {
   const openBrackets = [];
+
   const findBracketsArr = bracket => bracketsConfig.find(el => el.includes(bracket));
-  const isOpen = bracket => findBracketsArr(bracket).indexOf(bracket) === 0;
-  const isClose = bracket => findBracketsArr(bracket).lastIndexOf(bracket) === 1;
+  const isOpen = (bracket, bracketArr, openBrackets) => {
+    if (bracketArr.indexOf(bracket) === 0
+      && bracketArr.lastIndexOf(bracket) === 0) {
+      return true;
+    }
+
+    if (bracketArr.indexOf(bracket) === 0
+      && bracketArr.lastIndexOf(bracket) === 1
+      && !openBrackets.includes(bracket)) {
+      return true;
+    }
+
+    return false;
+  };
 
   for (let i = 0; i < str.length; i++) {
-    if (isOpen(str[i]) && isClose(str[i])) {
-      if (openBrackets.indexOf(str[i]) === -1) {
-        openBrackets.push(str[i]);
-      } else if (openBrackets.indexOf(str[i]) === openBrackets.length - 1) {
-        openBrackets.pop();
-      } else {
-        return false;
-      }
+    if (isOpen(str[i], findBracketsArr(str[i]), openBrackets)) {
+      openBrackets.push(str[i]);
     } else {
-      if (isOpen(str[i]) && !isClose(str[i])) {
-        openBrackets.push(str[i]);
-      }
-
-      if (isClose(str[i]) && !isOpen(str[i])) {
-        if (openBrackets.pop() !== findBracketsArr(str[i])[0]) return false;
-      }
+      if (openBrackets.pop() !== findBracketsArr(str[i])[0]) return false;
     }
   }
 
